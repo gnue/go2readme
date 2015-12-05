@@ -10,21 +10,20 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"text/template"
 )
 
 type Document struct {
 	ctx   *build.Package
 	pkg   *doc.Package
 	fset  *token.FileSet
-	templ *template.Template
+	templ Template
 
 	cache struct {
 		examples []*Example
 	}
 }
 
-func NewDocument(dir string, templ *template.Template) (*Document, error) {
+func NewDocument(dir string, templ Template) (*Document, error) {
 	path, err := filepath.Abs(dir)
 	if err != nil {
 		return nil, err
