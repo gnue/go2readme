@@ -2,12 +2,14 @@
 package go2readme
 
 import (
+	"fmt"
 	"go/build"
 	"go/doc"
 	"go/parser"
 	"go/token"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 )
@@ -104,6 +106,22 @@ func (d *Document) Synopsis() string {
 }
 
 func (d *Document) Usage() string {
+	if d.IsCommand() {
+		name := d.Name()
+
+		_, err := exec.LookPath(name)
+		if err != nil {
+			return fmt.Sprintf("$ %s -h", name)
+		}
+
+		cmd := exec.Command(name, "-h")
+		b, _ := cmd.CombinedOutput()
+		usage := string(b)
+		usage = strings.TrimPrefix(usage, "Usage:")
+		usage = strings.Trim(usage, " \t\r\n")
+		return usage
+	}
+
 	return ""
 }
 
