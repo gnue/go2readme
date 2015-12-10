@@ -68,8 +68,9 @@ func (d *Document) Examples() []*Example {
 
 		ctx := d.ctx
 		fset := d.fset
+		files := append(ctx.TestGoFiles, ctx.XTestGoFiles...)
 
-		for _, name := range ctx.TestGoFiles {
+		for _, name := range files {
 			f := filepath.Join(ctx.Dir, name)
 			file, err := parser.ParseFile(fset, f, nil, parser.ParseComments)
 			if err != nil {
