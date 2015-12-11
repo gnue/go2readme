@@ -3,6 +3,7 @@ package go2readme
 import (
 	"bytes"
 	"go/doc"
+	"go/format"
 	"go/printer"
 	"go/token"
 	"strings"
@@ -51,4 +52,19 @@ func (e *Example) Code() string {
 	}
 
 	return code
+}
+
+func (e *Example) Play() string {
+	if e.doc.Play == nil {
+		return ""
+	}
+
+	var buf bytes.Buffer
+
+	err := format.Node(&buf, e.fset, e.doc.Play)
+	if err != nil {
+		return ""
+	}
+
+	return buf.String()
 }
