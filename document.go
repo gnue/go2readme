@@ -102,6 +102,10 @@ func (d *Document) Synopsis() string {
 	return doc.Synopsis(d.pkg.Doc)
 }
 
+func (d *Document) Description() string {
+	return strings.TrimRight(d.pkg.Doc, " \t\r\n")
+}
+
 func (d *Document) Usage() string {
 	if d.IsCommand() {
 		name := d.Name()
