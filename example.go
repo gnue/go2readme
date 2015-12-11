@@ -13,6 +13,16 @@ type Example struct {
 	doc  *doc.Example
 }
 
+func NewExamples(fset *token.FileSet, examples ...*doc.Example) []*Example {
+	list := make([]*Example, len(examples))
+
+	for i, e := range examples {
+		list[i] = &Example{fset: fset, doc: e}
+	}
+
+	return list
+}
+
 func (e *Example) Name() string {
 	return e.doc.Name
 }

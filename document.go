@@ -80,11 +80,7 @@ func (d *Document) Examples() []*Example {
 			examples = append(examples, doc.Examples(file)...)
 		}
 
-		d.cache.examples = make([]*Example, len(examples))
-
-		for i, e := range examples {
-			d.cache.examples[i] = &Example{fset: d.fset, doc: e}
-		}
+		d.cache.examples = NewExamples(d.fset, examples...)
 	}
 
 	return d.cache.examples
