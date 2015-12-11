@@ -14,6 +14,8 @@ import (
 	"strings"
 )
 
+const spaceCharset = " \t\r\n"
+
 type Document struct {
 	ctx   *build.Package
 	pkg   *doc.Package
@@ -103,7 +105,7 @@ func (d *Document) Synopsis() string {
 }
 
 func (d *Document) Description() string {
-	return strings.TrimRight(d.pkg.Doc, " \t\r\n")
+	return strings.TrimRight(d.pkg.Doc, spaceCharset)
 }
 
 func (d *Document) Usage() string {
@@ -119,7 +121,7 @@ func (d *Document) Usage() string {
 		b, _ := cmd.CombinedOutput()
 		usage := string(b)
 		usage = strings.TrimPrefix(usage, "Usage:")
-		usage = strings.Trim(usage, " \t\r\n")
+		usage = strings.Trim(usage, spaceCharset)
 		return usage
 	}
 
