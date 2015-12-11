@@ -10,6 +10,7 @@ type FuncMap map[string]interface{}
 
 var DefualtFuncMap = FuncMap{
 	"import": ImportFunc,
+	"exists": ExistsFunc,
 }
 
 func ImportFunc(fname string) string {
@@ -20,4 +21,9 @@ func ImportFunc(fname string) string {
 	}
 
 	return string(b)
+}
+
+func ExistsFunc(fname string) bool {
+	_, err := os.Stat(fname)
+	return err == nil
 }
