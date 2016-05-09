@@ -21,7 +21,8 @@ import "{{ .ImportPath }}"
 {{if .Examples}}
 ## Examples
 {{range .Examples}}
-{{ .Doc }}{{if .Play }}
+{{if .Name}}### {{ .Name }}
+{{end}}{{if .Play }}
 ```go
 {{ .Play }}
 ```
@@ -34,6 +35,7 @@ import "{{ .ImportPath }}"
 ```go
 {{ .Code }}
 ```
-{{end}}{{end}}{{end}}
+{{end}}
+{{ .Doc }}{{end}}{{end}}
 {{range glob ".go2readme/*.md"}}{{import .}}
 {{end}}
