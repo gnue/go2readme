@@ -114,6 +114,11 @@ func (d *Document) Usage() string {
 	if d.IsCommand() {
 		name := d.Name()
 
+		p := os.Getenv("PATH")
+		defer os.Setenv("PATH", p)
+
+		os.Setenv("PATH", ".:"+p)
+
 		_, err := exec.LookPath(name)
 		if err != nil {
 			return fmt.Sprintf("$ %s -h", name)
