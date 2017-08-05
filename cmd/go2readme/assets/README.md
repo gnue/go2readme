@@ -9,33 +9,42 @@ $ go get {{ .ImportPath }}
 ```
 
 ## Usage
-{{if .IsCommand }}
+
+{{if .IsCommand -}}
 ```
 {{ .Usage }}
 ```
-{{else}}
+{{- else -}}
 ```go
 import "{{ .ImportPath }}"
 ```
-{{end}}
+{{- end}}
 {{if .Examples}}
 ## Examples
-{{range .Examples}}
-{{if .Name}}### {{ .Name }}
-{{end}}{{if .Play }}
+
+{{range .Examples -}}
+{{if .Name -}}
+### {{ .Name }}
+{{- end}}
+
+{{if .Play -}}
 ```go
 {{ .Play }}
 ```
-{{if .Output }}
+{{if .Output -}}
 ```
 {{ .Output }}
 ```
-{{end}}
-{{else}}
+{{- end}}
+{{- else -}}
 ```go
 {{ .Code }}
 ```
 {{end}}
-{{ .Doc }}{{end}}{{end}}
-{{range glob ".go2readme/*.md"}}{{import .}}
-{{end}}
+{{ .Doc }}
+{{- end}}
+{{- end}}
+
+{{- range glob ".go2readme/*.md"}}
+{{import .}}
+{{- end}}
