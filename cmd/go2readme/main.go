@@ -1,4 +1,4 @@
-// generate README.md
+// generate README for Go program
 package main
 
 import (
