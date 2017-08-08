@@ -12,6 +12,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/gnue/go2readme/mdfmt"
 )
 
 const spaceCharset = " \t\r\n"
@@ -133,5 +135,12 @@ func (d *Document) IsCommand() bool {
 }
 
 func (d *Document) WriteTo(w io.Writer) error {
-	return d.templ.Execute(w, d)
+	mdw := mdfmt.NewWriter(w)
+
+	err := d.templ.Execute(mdw, d)
+	if err != nil {
+		return err
+	}
+
+	return mdw.Flush()
 }
