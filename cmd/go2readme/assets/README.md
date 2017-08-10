@@ -42,7 +42,7 @@ import "{{ .ImportPath }}"
 ```
 {{end}}
 {{ .Doc }}
-{{- end}}
+{{end}}
 {{- end}}
 
 {{- range glob ".go2readme/*.md"}}
