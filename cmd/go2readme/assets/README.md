@@ -31,11 +31,13 @@ import "{{ .ImportPath }}"
 ```go
 {{ .Play }}
 ```
-{{if .Output -}}
+{{if .Output}}
+Output:
+
 ```
-{{ .Output }}
+{{- .Output }}
 ```
-{{- end}}
+{{end}}
 {{- else -}}
 ```go
 {{ .Code }}
