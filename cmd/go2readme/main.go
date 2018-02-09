@@ -11,7 +11,7 @@ import (
 	"github.com/jessevdk/go-flags"
 )
 
-//go:generate go-bindata -ignore=\.DS_Store assets/...
+//go:generate go-assets-builder -o=assets.go assets
 
 var opts struct {
 	Write    bool   `short:"w" long:"write" description:"write to file"`
@@ -32,7 +32,7 @@ func main() {
 		opts.Output = "README.md"
 	}
 
-	b, err := ReadFileOrAsset(opts.Template, "assets/README.md")
+	b, err := ReadFileOrAsset(opts.Template, "/assets/README.md")
 	if err != nil {
 		Fatalln(err)
 	}
@@ -75,7 +75,13 @@ func ReadFileOrAsset(fname string, asset string) ([]byte, error) {
 		return ioutil.ReadFile(fname)
 	}
 
-	return Asset(asset)
+	f, err := Assets.Open(asset)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	return ioutil.ReadAll(f)
 }
 
 func createFile(fname string, backup bool) (*os.File, error) {
