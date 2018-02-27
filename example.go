@@ -33,7 +33,7 @@ func (e *Example) Doc() string {
 }
 
 func (e *Example) Output() string {
-	return e.doc.Output
+	return strings.TrimSpace(e.doc.Output)
 }
 
 func (e *Example) Code() string {
