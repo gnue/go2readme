@@ -35,7 +35,7 @@ import "{{ .ImportPath }}"
 Output:
 
 ```
-{{- .Output }}
+{{ .Output }}
 ```
 {{end}}
 {{- else -}}
