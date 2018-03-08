@@ -12,11 +12,10 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"unicode"
 
 	"github.com/gnue/go2readme/mdfmt"
 )
-
-const spaceCharset = " \t\r\n"
 
 type Document struct {
 	ctx   *build.Package
@@ -107,7 +106,7 @@ func (d *Document) Synopsis() string {
 }
 
 func (d *Document) Description() string {
-	return strings.TrimRight(d.pkg.Doc, spaceCharset)
+	return strings.TrimRightFunc(d.pkg.Doc, unicode.IsSpace)
 }
 
 func (d *Document) Usage() string {
@@ -128,7 +127,7 @@ func (d *Document) Usage() string {
 		b, _ := cmd.CombinedOutput()
 		usage := string(b)
 		usage = strings.TrimPrefix(usage, "Usage:")
-		usage = strings.Trim(usage, spaceCharset)
+		usage = strings.TrimSpace(usage)
 		return usage
 	}
 
