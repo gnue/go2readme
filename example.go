@@ -48,7 +48,7 @@ func (e *Example) Code() string {
 	if n := len(code); n >= 2 && code[0] == '{' && code[n-1] == '}' {
 		code = code[1 : n-1]
 		code = strings.Replace(code, "\n    ", "\n", -1)
-		code = strings.Trim(code, " \r\n")
+		code = strings.TrimSpace(code)
 	}
 
 	return code

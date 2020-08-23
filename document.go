@@ -12,17 +12,17 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"unicode"
 
 	"github.com/gnue/go2readme/mdfmt"
 )
 
-const spaceCharset = " \t\r\n"
-
 type Document struct {
-	ctx   *build.Package
-	pkg   *doc.Package
-	fset  *token.FileSet
-	templ Template
+	ctx        *build.Package
+	pkg        *doc.Package
+	fset       *token.FileSet
+	templ      Template
+	importPath string
 
 	cache struct {
 		examples []*Example
@@ -99,7 +99,17 @@ func (d *Document) Name() string {
 }
 
 func (d *Document) ImportPath() string {
-	return d.pkg.ImportPath
+	if d.importPath == "" {
+		d.importPath = d.pkg.ImportPath
+
+		if d.importPath == "." {
+			if path, err := importPath(d.importPath); err == nil {
+				d.importPath = path
+			}
+		}
+	}
+
+	return d.importPath
 }
 
 func (d *Document) Synopsis() string {
@@ -107,7 +117,7 @@ func (d *Document) Synopsis() string {
 }
 
 func (d *Document) Description() string {
-	return strings.TrimRight(d.pkg.Doc, spaceCharset)
+	return strings.TrimRightFunc(d.pkg.Doc, unicode.IsSpace)
 }
 
 func (d *Document) Usage() string {
@@ -128,7 +138,7 @@ func (d *Document) Usage() string {
 		b, _ := cmd.CombinedOutput()
 		usage := string(b)
 		usage = strings.TrimPrefix(usage, "Usage:")
-		usage = strings.Trim(usage, spaceCharset)
+		usage = strings.TrimSpace(usage)
 		return usage
 	}
 
@@ -148,4 +158,40 @@ func (d *Document) WriteTo(w io.Writer) error {
 	}
 
 	return mdw.Flush()
+}
+
+func importPath(path string) (string, error) {
+	ctxt := build.Default
+	cmd := exec.Command("go", "list", "-e", "-compiler="+ctxt.Compiler, "-tags="+strings.Join(ctxt.BuildTags, ","), "-installsuffix="+ctxt.InstallSuffix, "--", path)
+
+	if ctxt.Dir != "" {
+		cmd.Dir = ctxt.Dir
+	}
+
+	var stdout, stderr strings.Builder
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	cgo := "0"
+	if ctxt.CgoEnabled {
+		cgo = "1"
+	}
+	cmd.Env = append(os.Environ(),
+		"GOOS="+ctxt.GOOS,
+		"GOARCH="+ctxt.GOARCH,
+		"GOROOT="+ctxt.GOROOT,
+		"GOPATH="+ctxt.GOPATH,
+		"CGO_ENABLED="+cgo,
+	)
+
+	if err := cmd.Run(); err != nil {
+		return "", fmt.Errorf("go/build: go list %s: %v\n%s\n", path, err, stderr.String())
+	}
+
+	f := strings.SplitN(stdout.String(), "\n", 2)
+	if len(f) != 2 {
+		return "", fmt.Errorf("go/build: importGo %s: unexpected output:\n%s\n", path, stdout.String())
+	}
+
+	return f[0], nil
 }
