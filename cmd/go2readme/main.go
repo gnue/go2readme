@@ -2,8 +2,8 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
-	"io"
 	"os"
 	"text/template"
 
@@ -11,7 +11,8 @@ import (
 	"github.com/jessevdk/go-flags"
 )
 
-//go:generate go-assets-builder -o=assets.go assets
+//go:embed assets/README.md
+var readme string
 
 var opts struct {
 	Write    bool   `short:"w" long:"write" description:"write to file"`
@@ -32,13 +33,8 @@ func main() {
 		opts.Output = "README.md"
 	}
 
-	b, err := ReadFileOrAsset(opts.Template, "/assets/README.md")
-	if err != nil {
-		Fatalln(err)
-	}
-
 	funcMap := template.FuncMap(go2readme.DefualtFuncMap)
-	templ, err := template.New("README").Funcs(funcMap).Parse(string(b))
+	templ, err := template.New("README").Funcs(funcMap).Parse(readme)
 	if err != nil {
 		Fatalln(err)
 	}
@@ -68,20 +64,6 @@ func main() {
 	if opts.Output != "" {
 		fmt.Fprintf(os.Stderr, "written to '%s'\n", opts.Output)
 	}
-}
-
-func ReadFileOrAsset(fname string, asset string) ([]byte, error) {
-	if fname != "" {
-		return os.ReadFile(fname)
-	}
-
-	f, err := Assets.Open(asset)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	return io.ReadAll(f)
 }
 
 func createFile(fname string, backup bool) (*os.File, error) {
