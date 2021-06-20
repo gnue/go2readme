@@ -3,7 +3,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"text/template"
 
@@ -72,7 +72,7 @@ func main() {
 
 func ReadFileOrAsset(fname string, asset string) ([]byte, error) {
 	if fname != "" {
-		return ioutil.ReadFile(fname)
+		return os.ReadFile(fname)
 	}
 
 	f, err := Assets.Open(asset)
@@ -81,7 +81,7 @@ func ReadFileOrAsset(fname string, asset string) ([]byte, error) {
 	}
 	defer f.Close()
 
-	return ioutil.ReadAll(f)
+	return io.ReadAll(f)
 }
 
 func createFile(fname string, backup bool) (*os.File, error) {
