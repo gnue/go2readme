@@ -4,9 +4,15 @@
 
 ## Installation
 
+{{if .IsCommand -}}
+```sh
+$ go install {{ .ImportPath }}@latest
+```
+{{- else -}}
 ```sh
 $ go get {{ .ImportPath }}
 ```
+{{- end}}
 
 ## Usage
 
