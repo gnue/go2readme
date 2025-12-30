@@ -2,7 +2,6 @@ package go2readme
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -16,7 +15,7 @@ var DefualtFuncMap = FuncMap{
 }
 
 func ImportFunc(fname string) string {
-	b, err := ioutil.ReadFile(fname)
+	b, err := os.ReadFile(fname)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		return ""

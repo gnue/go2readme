@@ -5,7 +5,7 @@ generate README for Go program
 ## Installation
 
 ```sh
-$ go get github.com/gnue/go2readme/cmd/go2readme
+$ go install github.com/gnue/go2readme/cmd/go2readme@latest
 ```
 
 ## Usage
@@ -14,6 +14,7 @@ $ go get github.com/gnue/go2readme/cmd/go2readme
 go2readme [OPTIONS] [dir]
 
 Application Options:
+  -v, --version   print version
   -w, --write     write to file
   -o, --output=   output file
   -t, --template= template file
