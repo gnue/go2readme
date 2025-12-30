@@ -15,6 +15,7 @@ import (
 var readme string
 
 var opts struct {
+	Version  bool   `short:"v" long:"version" description:"print version"`
 	Write    bool   `short:"w" long:"write" description:"write to file"`
 	Output   string `short:"o" long:"output" description:"output file"`
 	Template string `short:"t" long:"template" description:"template file"`
@@ -27,6 +28,11 @@ func main() {
 	_, err := flags.Parse(&opts)
 	if err != nil {
 		os.Exit(1)
+	}
+
+	if opts.Version {
+		versionPrint()
+		os.Exit(0)
 	}
 
 	if opts.Write && opts.Output == "" {
